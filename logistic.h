@@ -73,7 +73,7 @@ town getTownByName(int name, int counttown, const town* towns)
 	return errortown;
 }
 
-int getDistance(const town town1, const town town2)
+double getDistance(const town town1, const town town2)
 {
 	//TODO: distanse from OSRM
 	return sqrt(pow(town2.x - town1.x, 2) + pow(town2.y - town1.y, 2));
