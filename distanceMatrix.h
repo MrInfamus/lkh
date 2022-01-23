@@ -21,6 +21,9 @@ i\j0 1 2 3 4
 h(h+1)/2
 21 - element
 */
+
+
+
 void finalizehalfmatrix(halfmatrix *m)
 {
 	for(int i = 0; i < m->height; i++)
@@ -74,6 +77,11 @@ void inithalfmatrix(halfmatrix *m, int h)
 	}
 }
 
+double getByTown(const halfmatrix *canvas, int townx, int towny)
+{
+    return canvas->data[townx][canvas->width - 2 - (towny-townx)];
+}
+
 //Печатает половинную матрицу: TODO
 void printhalfmatrix(const halfmatrix *canvas) {
     int i;
@@ -93,15 +101,19 @@ void printtownmatrix(const halfmatrix * canvas) {
     printf("  :");
     for(int i = 0; i < canvas->width;i++)
     {
-        printf("%-8d  ", canvas->width - i);
+        printf(" %-8c  ", '0' + canvas->width - i);
     }
     putchar('\n');
     for(int i = 0; i < canvas->width; i++)
     {
-        printf("%-2d:", i);
+        printf("%-2c:", '0' + i);
         for(int j = i; j < canvas->width;j++)
         {
-            printf("%lf  ", canvas->data[i][j-i]);
+            if(canvas->data[i][j-i] < 0){
+                printf("%lf  ", canvas->data[i][j-i]);
+            } else {
+                printf(" %lf  ", canvas->data[i][j-i]);
+            }
         }
         putchar('\n');
     }

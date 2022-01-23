@@ -13,7 +13,7 @@ int main()
 	//logcar(makecar(1, maxCapacity), 2, towns);
 	//printf("%d\n", inRadiusTown(towns[0], towns[1], 2));
 
-	//printAllMap(countTowns, towns);
+	printAllMap(countTowns, towns);
 
 	
 	halfmatrix m;
@@ -27,12 +27,24 @@ int main()
 		{
 			//printf("t%d %d t%d %lf\n", i, j, m.width-j, getDistance(towns[i], towns[m.width-j]));
 			//m.data[i][j] = getDistance(towns[j], towns[i]);
-			pointAthalfmatrix(&m, i, j, getDistance(towns[i], towns[m.width-j]));
+			if(getTownByName(i, countTowns, towns).weight + getTownByName(m.width-j, countTowns, towns).weight > maxCapacity) {
+				pointAthalfmatrix(&m, i, j, -1.0);
+				continue;
+			}
+			pointAthalfmatrix(&m, i, j, getDistance(getTownByName(i, countTowns, towns), getTownByName(m.width-j, countTowns, towns)));
 		}
 	}
 	//printhalfmatrix(&m);
 	printtownmatrix(&m);
+	printf("%lf\n", getByTown(&m, 2, 11));
+	//town subturs[countTowns-1][2*countTowns - 1];
 
+	/*
+	for(int i = 0; i < countTowns; i++) {
+		for(int j = i; i < countTowns; j++) {
+
+		}
+	}*/
 	
 
 	finalizehalfmatrix(&m);

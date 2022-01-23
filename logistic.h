@@ -73,6 +73,17 @@ town getTownByName(int name, int counttown, const town* towns)
 	return errortown;
 }
 
+double getDistanceBetweenTowns(int name1, int name2)
+{
+	//name1 = 1, name2 = 0
+	//x = 0, y = 5
+
+	//name1 = 2, name2 = 4
+	//x = 2, y = 2
+	return 0.0;
+}
+
+
 double getDistance(const town town1, const town town2)
 {
 	//TODO: distanse from OSRM
@@ -86,7 +97,7 @@ void printAllMap(int counttown, const town *towns)
 	for(int i = 0; i < counttown; i++)
 	{
 		if(towns[i].weight != 0) {
-			pointAtCharCanvas(&c, makeVector2d((int)(towns[i].x * 50), (int)(towns[i].y * 50)), '0' + (towns[i].name % 10));
+			pointAtCharCanvas(&c, makeVector2d((int)(towns[i].x * 50), (int)(towns[i].y * 50)), '0' + towns[i].name);
 		} else {
 			pointAtCharCanvas(&c, makeVector2d((int)(towns[i].x * 50), (int)(towns[i].y * 50)), '@');
 		}
