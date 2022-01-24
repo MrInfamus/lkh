@@ -6,6 +6,7 @@
 
 int main()
 {
+	srand(time(NULL));
 	STARTTOWNS;
 	//printf("%d\n", sumweights(2, towns) / maxCapacity);
 
@@ -37,14 +38,34 @@ int main()
 	//printhalfmatrix(&m);
 	printtownmatrix(&m);
 	printf("%lf\n", getByTown(&m, 2, 11));
-	//town subturs[countTowns-1][2*countTowns - 1];
+	town sub[countTowns - 1]; // города
+	for(int i = 1; i < countTowns; i++)
+	{
+		sub[i-1] = getTownByName(i, countTowns, towns);
+	}
+	town temp[countTowns];// координаты |
+	temp[0] = towns[0];
+	// 
+	for(int i = 0; i < countTasks;i++)
+	{
 
-	/*
-	for(int i = 0; i < countTowns; i++) {
-		for(int j = i; i < countTowns; j++) {
-
+		doShuffle(countTowns - 1, sub);
+		printTownList(countTowns - 1, sub);
+		int cap, k = 0, p = 0;
+		while(k < countTowns - 1) {
+			//printf("?%d\n", sub[k].weight);
+			for(cap = sub[k].weight; cap < maxCapacity && k < countTowns - 1;k++, cap += sub[k].weight) {
+				//printf("??%d\n", cap);
+				temp[k-p] = sub[k];
+			}
+			//printTownList(k - p, temp);
+			if(k-p > 2) {
+				LKH(temp, k-p, &m);
+			}
+			
+			p = k;
 		}
-	}*/
+	}
 	
 
 	finalizehalfmatrix(&m);

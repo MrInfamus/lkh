@@ -22,7 +22,8 @@ h(h+1)/2
 21 - element
 */
 
-
+#define my_min(x, y) (((x) > (y)) ? (y) : (x))
+#define my_max(x, y) (((x) < (y)) ? (y) : (x))
 
 void finalizehalfmatrix(halfmatrix *m)
 {
@@ -79,7 +80,7 @@ void inithalfmatrix(halfmatrix *m, int h)
 
 double getByTown(const halfmatrix *canvas, int townx, int towny)
 {
-    return canvas->data[townx][canvas->width - 2 - (towny-townx)];
+    return canvas->data[my_min(townx, towny)][canvas->width - my_max(townx, towny)];
 }
 
 //Печатает половинную матрицу: TODO

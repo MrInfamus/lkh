@@ -24,3 +24,7 @@
 		maketown(12,0.32, 0.51, 87), \
 		maketown(13,0.48, 0.47, 41) \
 	}
+// for lkh
+#define countTasks 1
+#define countUpdate 100
+#define LKH lkh2opt
