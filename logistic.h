@@ -141,6 +141,44 @@ double subtourdistance(town *sub, int lenSub, halfmatrix* m)
 	return r;
 }
 
+void reverseTown(town *sub, int i, int j)
+{
+	int s = (j + i) / 2;
+	if((j + i) % 2 == 0) {
+		for(int k = 0; k < (j - i + 1) / 2; k++)
+		{
+			swap(&sub[s - k], &sub[s+1+k]);
+		}
+	} else {
+		for(int k = 0; k < (j - i) / 2; k++)
+		{
+			swap(&sub[s-1-k], &sub[s+1+k]);
+		}	
+	}
+}
+
+void moveEmels(town *sub, int start1, int end1, int start2, int end2)
+{
+	int difference = (end1 - start1 - end2 + start2);
+	if(difference > 0) {
+		town *tmp = (town*)malloc((end1-start1+1)*sizeof(town));
+		for(int i = 0; i < end1-start1+1; i++) {
+			tmp[i] = sub[start1 + i];
+			sub[start1 + i]
+		}
+
+	} else if(difference < 0) {
+		town *tmp = (town*)malloc((end2-start2+1)*sizeof(town));
+		for(int i = 0; i < end2-start2+1; i++) {
+			tmp[i] = sub[start2 + i];
+		}
+	} else {
+
+	}
+
+}
+
+
 void lkh2opt(town *sub, int lenSub, halfmatrix* m)
 {
 	town subcopy[lenSub];
@@ -160,7 +198,10 @@ void lkh2opt(town *sub, int lenSub, halfmatrix* m)
 	{
 		a = rand() % lenSub;
 		b = rand() % lenSub;
-		swap(&subcopy[a], &subcopy[b]);
+		while(a == b) {
+			b = rand() % lenSub;
+		}
+		reverseTown(subcopy, my_min(a, b), my_max(a, b));
 		newd = subtourdistance(subcopy, lenSub, m);
 		if(newd < best) {
 			best = newd;
@@ -173,5 +214,78 @@ void lkh2opt(town *sub, int lenSub, halfmatrix* m)
 	}
 	printf("New distance: %lf\n", best);
 	printf("New list: "); printTownList(lenSub, sub);
+}
+
+void lkh3opt(town *sub, int lenSub, halfmatrix *m)
+{
+	/*
+	2-opt
+	0: Or O  O
+	1: O  Or O
+	2: O  O  Or
+
+	3-opt
+	3: O  [O  O ]
+	4: Or [O  O ]
+	5: O  [Or O ]
+	6: O  [O  Or]
+	*/
+	int a, b, mode;
+	for(int i = 0; i < countUpdate; i++)
+	{
+		mode = rand() % 7;
+		if(mode < 3) {
+			return lkh2opt(sub, lenSub, m);
+		}
+
+		a = rand() % lenSub;
+		b = rand() % lenSub;
+		
+		while(a==b) {
+			b = rand() % lenSub;
+		}
+
+
+	}
+}
+
+void lkh4opt(town *sub, int lenSub, halfmatrix* m)
+{
+	int a, b, c;
+	for(int i = 0; i < countUpdate; i++)
+	{
+		a = rand() % lenSub;
+		b = rand() % lenSub;
+		c = rand() % lenSub;
+		while(a==b) {
+			b = rand() % lenSub;
+		}
+		while(a == c || b == c) {
+			c = rand() % lenSub;
+		}
+
+		//hahahhahahhaa
+		//int nmin, ns, nmax = my_min(my_min(a, b), my_min(a, c)), \
+		a + b + c - my_min(my_min(a, b), my_min(a, c)) - my_max(my_max(a, b), my_max(a, c)), \
+		my_max(my_max(a, b), my_max(a, c));
+
+		int nmin, ns, nmax;
+		if(a > b && b > c) {
+			nmin, ns, nmax = c, b, a;
+		} else if(c < a && a < b) {
+			nmin, ns, nmax = c, a, b;
+		} else if(a > c && c > b) {
+			nmin, ns, nmax = b, c, a;
+		} else if(b < a && a < c) {
+			nmin, ns, nmax = b, a, c;
+		} else if(b > c && c > a) {
+			nmin, ns, nmax = a, c, b;
+		} else if(a < b && b < c) {
+			nmin, ns, nmax = a, b, c;
+		}
+
+
+
+	}
 }
 

@@ -8,6 +8,11 @@ int main()
 {
 	srand(time(NULL));
 	STARTTOWNS;
+	//printTownList(countTowns, towns);
+	//reverseTown(towns, 1, 6);
+	//printTownList(countTowns, towns);
+	//reverseTown(towns, 1, 6);
+	//printTownList(countTowns, towns);
 	//printf("%d\n", sumweights(2, towns) / maxCapacity);
 
 	//printtown(towns[0]);
