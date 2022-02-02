@@ -22,6 +22,7 @@ h(h+1)/2
 21 - element
 */
 
+
 #define my_min(x, y) (((x) > (y)) ? (y) : (x))
 #define my_max(x, y) (((x) < (y)) ? (y) : (x))
 

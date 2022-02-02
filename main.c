@@ -7,18 +7,18 @@
 int main()
 {
 	srand(time(NULL));
-	STARTTOWNS;
-	//printTownList(countTowns, towns);
-	//reverseTown(towns, 1, 6);
-	//printTownList(countTowns, towns);
-	//reverseTown(towns, 1, 6);
-	//printTownList(countTowns, towns);
-	//printf("%d\n", sumweights(2, towns) / maxCapacity);
+	//STARTTOWNS;
 
-	//printtown(towns[0]);
-	//logcar(makecar(1, maxCapacity), 2, towns);
-	//printf("%d\n", inRadiusTown(towns[0], towns[1], 2));
-
+	FILES;
+	town towns[countTowns];
+	//Пока криво, но надо будет допилить
+	for(int i = 0; i < countFiles; i++)
+	{
+		read_file(mfiles[i], towns, countTowns);
+	}
+	printTownList(countTowns, towns);
+	printtown(getTownByName(0, countTowns, towns));
+	printtown(getTownByName(1, countTowns, towns));
 	printAllMap(countTowns, towns);
 
 	
@@ -66,6 +66,7 @@ int main()
 			//printTownList(k - p, temp);
 			if(k-p > 2) {
 				LKH(temp, k-p, &m);
+				//TODO choose best variant tour.
 			}
 			
 			p = k;

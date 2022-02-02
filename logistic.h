@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include "CharCanvas.h"
 #include "distanceMatrix.h"
+#include <limits.h>
 
 
 #pragma once
@@ -76,10 +77,70 @@ town getTownByName(int name, int counttown, const town* towns)
 	return errortown;
 }
 
+int read_file(const char* name_file, town *towns, int counttowns)
+{
+    FILE* in;
+    in = fopen(name_file, "r");
+    if(in == NULL)
+    {
+        //printf("11 Error %d \n", errno);
+        return -1;
+    }
+    int symbol;
+    for(int i = 0; (symbol = fgetc(in)) != EOF && symbol != '\n'; i++);
+
+
+    double x, y, cap;
+    for(int i = counttowns-1; i >= 0 ; i--)
+    {
+        fscanf(in, "%lf\t%lf\t%lf\n", &x, &y, &cap);
+        towns[i] = maketown(i, x, y, cap);
+    }
+    //fscanf(in, "%lf\t%lf\t\n", &depot[0], &depot[1]);
+    fclose(in);
+    return 0;
+}
+
 double getDistance(const town town1, const town town2)
 {
 	//TODO: distanse from OSRM
-	return sqrt(pow(town2.x - town1.x, 2) + pow(town2.y - town1.y, 2));
+	//return sqrt(pow(town2.x - town1.x, 2) + pow(town2.y - town1.y, 2));
+	char path[PATH_MAX];
+	char output[120];
+	FILE *fp; int status;
+
+	char *req = "curl -s 'http://router.project-osrm.org/route/v1/driving/%lf,%lf;%lf,%lf?overview=false'";
+	snprintf(output, 120, req, town1.y, town1.x, town2.y, town2.x);
+	//printf("%s\n", output);
+	fp = popen(output, "r");
+	if(fp == NULL) {
+		return -2.0;
+	}
+
+	char num[12]; int trigger = 0;
+	char *eptr;
+
+	for(int c = 3; (c = fgetc(fp)) != EOF; ) {
+		if(trigger <= 3 && c == 'd' && (c = fgetc(fp)) == 'i' && (c = fgetc(fp)) == 's' &&
+		  (c = fgetc(fp)) == 't' && (c = fgetc(fp)) =='a' && (c = fgetc(fp)) == 'n' &&
+		  (c = fgetc(fp)) == 'c' && (c = fgetc(fp)) == 'e' && (c = fgetc(fp)) == '"' &&
+		  (c = fgetc(fp)) == ':') {
+		  	if(trigger < 2) {
+		  		trigger++;
+		  	}
+		  	int h = 0;
+			while((c = fgetc(fp)) != ',') {
+				num[h] = c;
+				h++;
+			}
+			num[h] = '\0';
+			trigger++;
+		}
+	}
+	double result = strtod(num, &eptr);
+	//printf("%lf\n", result);
+	pclose(fp);	
+	return result;
 }
 
 void printAllMap(int counttown, const town *towns)
@@ -89,9 +150,9 @@ void printAllMap(int counttown, const town *towns)
 	for(int i = 0; i < counttown; i++)
 	{
 		if(towns[i].weight != 0) {
-			pointAtCharCanvas(&c, makeVector2d((int)(towns[i].x * 50), (int)(towns[i].y * 50)), '0' + towns[i].name);
+			pointAtCharCanvas(&c, makeVector2d((int)((towns[i].x - 43) * 50), (int)((towns[i].y - 76) * 50)), '0' + towns[i].name);
 		} else {
-			pointAtCharCanvas(&c, makeVector2d((int)(towns[i].x * 50), (int)(towns[i].y * 50)), '@');
+			pointAtCharCanvas(&c, makeVector2d((int)((towns[i].x - 43) * 50), (int)((towns[i].y - 76) * 50)), '@');
 		}
 	}
 	printCharCanvas(&c);
@@ -159,23 +220,46 @@ void reverseTown(town *sub, int i, int j)
 
 void moveEmels(town *sub, int start1, int end1, int start2, int end2)
 {
-	int difference = (end1 - start1 - end2 + start2);
+	int difference = (end1 - start1 - (end2 - start2));
 	if(difference > 0) {
-		town *tmp = (town*)malloc((end1-start1+1)*sizeof(town));
-		for(int i = 0; i < end1-start1+1; i++) {
-			tmp[i] = sub[start1 + i];
-			sub[start1 + i]
+		town *tmp = (town*)malloc(difference*sizeof(town));
+		// 0 1 2 3 4 5 6 7 8 9 10
+		//[0 1 2 3]4 5 6[7 8 9]10
+		//tmp[difference], tmp[1]
+		for(int i = 0; i < difference; i++) {
+			tmp[i] = sub[end1 - difference + 1 + i];
+		}
+
+
+		town t;		
+		for(int i = 0; i < end2 - start2 + 1; i++)
+		{
+			t = sub[start1 + i];
+			sub[start1 + i] = sub[start2 + i];
+			sub[start2 + i] = t;
+		}
+
+		for(int i = 0; i < start2 - end1 + 1; i++)
+		{
+			sub[end1 + 1 + i - difference] = sub[end1 + 1 + i];
 		}
 
 	} else if(difference < 0) {
-		town *tmp = (town*)malloc((end2-start2+1)*sizeof(town));
+		town *tmp = (town*)malloc(-difference*sizeof(town));
 		for(int i = 0; i < end2-start2+1; i++) {
 			tmp[i] = sub[start2 + i];
+		}
+		town t;		
+		for(int i = 0; i < end2 - start2 + 1; i++)
+		{
+			t = sub[start1 + i];
+			sub[start1 + i] = sub[start2 + i];
+			sub[start2 + i] = t;
 		}
 	} else {
 
 	}
-
+	//free(tmp);
 }
 
 
@@ -249,6 +333,8 @@ void lkh3opt(town *sub, int lenSub, halfmatrix *m)
 	}
 }
 
+
+
 void lkh4opt(town *sub, int lenSub, halfmatrix* m)
 {
 	int a, b, c;
@@ -271,19 +357,19 @@ void lkh4opt(town *sub, int lenSub, halfmatrix* m)
 
 		int nmin, ns, nmax;
 		if(a > b && b > c) {
-			nmin, ns, nmax = c, b, a;
+			nmin = c; ns = b; nmax = a;
 		} else if(c < a && a < b) {
-			nmin, ns, nmax = c, a, b;
+			//nmin, ns, nmax = c, a, b;
 		} else if(a > c && c > b) {
-			nmin, ns, nmax = b, c, a;
+			//nmin, ns, nmax = b, c, a;
 		} else if(b < a && a < c) {
-			nmin, ns, nmax = b, a, c;
+			//nmin, ns, nmax = b, a, c;
 		} else if(b > c && c > a) {
-			nmin, ns, nmax = a, c, b;
+			//nmin, ns, nmax = a, c, b;
 		} else if(a < b && b < c) {
-			nmin, ns, nmax = a, b, c;
+			//nmin, ns, nmax = a, b, c;
 		}
-
+		printf("%d, %d, %d\n", nmin, ns, nmax);
 
 
 	}

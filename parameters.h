@@ -1,11 +1,34 @@
 
 // for towns
-#define countTowns 14
+#define countTowns 21
 
 // for cars
-#define maxCapacity 90
+#define maxCapacity 150
 #define maxCountCar 3
 #define optimalRadius 0.37
+#define countFiles 1
+
+#define FILES \
+	char *mfiles[] = { \
+		"/Users/ivandruzkov/project/LKH0/20(20_задач)/20200925_093755.csv", \
+		"20(20_задач)/20201027_214904.csv", \
+		"20(20_задач)/20201028_202211.csv", \
+		"20(20_задач)//20201029_201947.csv", \
+		"20(20_задач)//20201105_201910.csv", \
+		"20(20_задач)//20201109_190333.csv", \
+		"20(20_задач)//20201110_211510.csv", \
+		"20(20_задач)//20201110_212146.csv", \
+		"20(20_задач)//20201117_214239.csv", \
+		"20(20_задач)//20201127_184250.csv", \
+		"20(20_задач)//20201128_220622.csv", \
+		"20(20_задач)//20201203_215226.csv", \
+		"20(20_задач)//20201204_205445.csv", \
+		"20(20_задач)//20201209_152236.csv", \
+		"20(20_задач)//20201214_185310.csv", \
+		"20(20_задач)//20201007_185322.csv", \
+		"20(20_задач)//20201023_203450.csv" \
+	}
+
 
 #define STARTTOWNS \
 	town towns[] = { \
@@ -25,6 +48,6 @@
 		maketown(13,0.48, 0.47, 41) \
 	}
 // for lkh
-#define countTasks 1
+#define countTasks 5
 #define countUpdate 100
 #define LKH lkh2opt
