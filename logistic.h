@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include "CharCanvas.h"
 #include "distanceMatrix.h"
+#include "parameters.h"
 #include <limits.h>
 
 
@@ -218,13 +219,81 @@ void reverseTown(town *sub, int i, int j)
 	}
 }
 
-void moveEmels(town *sub, int start1, int end1, int start2, int end2)
+int moveElems(town *sub, int start1, int end1, int start2, int end2)
 {
 	int difference = (end1 - start1 - (end2 - start2));
+	// 0 1 2 3 4 5 6 7 8 9 10
+	//[0 1 2 3]4 5 6[7 8 9]10
+	//difference = 3 - 0 - (9 - 7) = 1
+
+	town tmp;
+
+	town *mtmp = (town*)malloc(abs(difference) * sizeof(town));
+	if(mtmp == NULL) {
+		return -1;
+	}
+	for(int i = 0; i < abs(difference); i++) {
+		if(difference > 0) {
+			mtmp[i] = sub[end1 + 1 - difference + i];
+		} else if(difference < 0) {
+			mtmp[i] = sub[start2 + 1 + difference + i];
+		}
+	}
+
+	if(difference > 0) {
+		//0[1 2 3 4]5 6 7[8 9]10
+		for(int i = 0; i < start2 - end1 - 1; i++) {
+			sub[end1 + 1 - difference + i] = sub[start2 - end1 + i];
+		}
+
+		for(int i = 0; i < end1 - start1 + 1 - difference; i++) {
+			tmp = sub[start1 + i];
+			sub[start1 + i] = sub[start2 + i];
+			sub[start2 + i] = tmp;
+		}
+
+	} else if(difference < 0) {
+		//[0 1 2]3 4[5 6 7 8 9]10
+		printTownList(11, sub);
+		for(int i = 0; i < end1 - start1 + 1; i++) {
+			tmp = sub[start1 + i];
+			sub[start1 + i] = sub[start2 - difference + i];
+			sub[start2 - difference + i] = tmp;
+		}
+		printTownList(11, sub);
+		//[7 8 9]3 4[5 6 0 1 2]10
+
+		for(int i = 0; i < start2; i++) {
+			sub[start2 - difference - 1 - i] = sub[start2 - 1 - i];
+		}
+		printTownList(11, sub);
+		//[* * 7]8 9[3 4 0 1 2]10
+
+		/*for(int i = 0; i < abs(difference); i++) {
+			sub[start1 + i] = mtmp[i];
+		}*/
+		//{5 6 7 8 9}3 4{0 1 2}10
+	}
+
+
+	for(int i = 0; i < end1 - start1 + 1 - difference; i++) {
+		tmp = sub[start1 + i];
+		sub[start1 + i] = sub[start2 + i];
+		sub[start2 + i] = tmp;
+	}
+
+	//[7 8 9 3]4 5 6[0 1 2]10
+
+	//[7 8 9 4]5 6 0[1 2 3]10
+	free(mtmp);
+	return 0;
+
+
+
+	/*
 	if(difference > 0) {
 		town *tmp = (town*)malloc(difference*sizeof(town));
-		// 0 1 2 3 4 5 6 7 8 9 10
-		//[0 1 2 3]4 5 6[7 8 9]10
+
 		//tmp[difference], tmp[1]
 		for(int i = 0; i < difference; i++) {
 			tmp[i] = sub[end1 - difference + 1 + i];
@@ -258,7 +327,7 @@ void moveEmels(town *sub, int start1, int end1, int start2, int end2)
 		}
 	} else {
 
-	}
+	}*/
 	//free(tmp);
 }
 
