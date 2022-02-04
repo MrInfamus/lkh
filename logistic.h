@@ -236,42 +236,47 @@ int moveElems(town *sub, int start1, int end1, int start2, int end2)
 		if(difference > 0) {
 			mtmp[i] = sub[end1 + 1 - difference + i];
 		} else if(difference < 0) {
-			mtmp[i] = sub[start2 + 1 + difference + i];
+			mtmp[i] = sub[start2 + i];
 		}
 	}
 
 	if(difference > 0) {
 		//0[1 2 3 4]5 6 7[8 9]10
+		printTownList(11, sub);
 		for(int i = 0; i < start2 - end1 - 1; i++) {
-			sub[end1 + 1 - difference + i] = sub[start2 - end1 + i];
+			sub[end1 + 1 - difference + i] = sub[start2 - end1 + 1 + i];
 		}
-
+		//0[1 2 5 6]7 8 9[* *]10
+		printTownList(11, sub);
 		for(int i = 0; i < end1 - start1 + 1 - difference; i++) {
 			tmp = sub[start1 + i];
 			sub[start1 + i] = sub[start2 + i];
 			sub[start2 + i] = tmp;
 		}
+		//0[8 9 5 6]7 1 2[* *]10
+
+
+		//0[8 9 5 6]7 1 2[3 4]10
+		//0{8 9}5 6 7{1 2 3 4}10
+		printTownList(11, sub);
 
 	} else if(difference < 0) {
 		//[0 1 2]3 4[5 6 7 8 9]10
-		printTownList(11, sub);
 		for(int i = 0; i < end1 - start1 + 1; i++) {
 			tmp = sub[start1 + i];
 			sub[start1 + i] = sub[start2 - difference + i];
 			sub[start2 - difference + i] = tmp;
 		}
-		printTownList(11, sub);
 		//[7 8 9]3 4[5 6 0 1 2]10
 
-		for(int i = 0; i < start2; i++) {
+		for(int i = 0; i < start2-start1; i++) {
 			sub[start2 - difference - 1 - i] = sub[start2 - 1 - i];
 		}
-		printTownList(11, sub);
 		//[* * 7]8 9[3 4 0 1 2]10
 
-		/*for(int i = 0; i < abs(difference); i++) {
+		for(int i = 0; i < abs(difference); i++) {
 			sub[start1 + i] = mtmp[i];
-		}*/
+		}
 		//{5 6 7 8 9}3 4{0 1 2}10
 	}
 
