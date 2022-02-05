@@ -1,6 +1,6 @@
 
 // for towns
-#define countTowns 21
+#define countTowns 14
 
 // for cars
 #define maxCapacity 150
@@ -48,6 +48,6 @@
 		maketown(13,0.48, 0.47, 41) \
 	}
 // for lkh
-#define countTasks 5
-#define countUpdate 100
-#define LKH lkh2opt
+#define countTasks 1
+#define countUpdate 1
+#define LKH lkh3opt

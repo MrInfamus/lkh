@@ -7,19 +7,18 @@
 int main()
 {
 	srand(time(NULL));
-	//STARTTOWNS;
-
-	FILES;
+	STARTTOWNS;
+	//FILES;
 
 
 	halfmatrix m;
 	inithalfmatrix(&m, countTowns-1);
 
-	town towns[countTowns];
+	//town towns[countTowns];
 	//Пока криво, но надо будет допилить
 	for(int i = 0; i < countFiles; i++)
 	{
-		read_file(mfiles[i], towns, countTowns);
+		//read_file(mfiles[i], towns, countTowns);
 
 		printTownList(countTowns, towns);
 		printtown(getTownByName(0, countTowns, towns));
@@ -36,7 +35,7 @@ int main()
 					pointAthalfmatrix(&m, i, j, -1.0);
 					continue;
 				}
-				pointAthalfmatrix(&m, i, j, getDistance(getTownByName(i, countTowns, towns), getTownByName(m.width-j, countTowns, towns)));
+				pointAthalfmatrix(&m, i, j, getDistanceE(getTownByName(i, countTowns, towns), getTownByName(m.width-j, countTowns, towns)));
 			}
 		}
 		printtownmatrix(&m);
