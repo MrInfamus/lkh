@@ -100,7 +100,7 @@ int main()
 		fputc('\n', out);
 	}
 	
-
+	fclose(out);
 	finalizehalfmatrix(&m);
 	return 0;
 }

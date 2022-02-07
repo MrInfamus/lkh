@@ -373,8 +373,7 @@ double lkh3opt(town *sub, int lenSub, halfmatrix *m)
 
 	for(int i = 0; i < countUpdate; i++)
 	{
-		//mode = rand() % 7;
-		mode = 6;
+		mode = rand() % 7;
 
 		a0 = rand() % lenSub;
 		b0 = rand() % lenSub;
@@ -384,7 +383,7 @@ double lkh3opt(town *sub, int lenSub, halfmatrix *m)
 		}
 		a = my_min(a0, b0);
 		b = my_max(a0, b0);
-		printf("%d %d\n", a, b);
+		//printf("%d %d\n", a, b);
 		switch(mode){
 			case(0): {reverseTown(subcopy, 1, a);break;}
 			case(1): {reverseTown(subcopy, a+1, b);break;}
