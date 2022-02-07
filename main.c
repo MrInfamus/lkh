@@ -7,18 +7,24 @@
 int main()
 {
 	srand(time(NULL));
-	STARTTOWNS;
-	//FILES;
+	//STARTTOWNS;
+	FILES;
 
 
 	halfmatrix m;
 	inithalfmatrix(&m, countTowns-1);
 
-	//town towns[countTowns];
+
+	FILE *out = fopen(fileout, "w");
+	if(out == NULL) {
+		exit(-1);
+	}
+
+	town towns[countTowns];
 	//Пока криво, но надо будет допилить
 	for(int i = 0; i < countFiles; i++)
 	{
-		//read_file(mfiles[i], towns, countTowns);
+		read_file(mfiles[i], towns, countTowns);
 
 		printTownList(countTowns, towns);
 		printtown(getTownByName(0, countTowns, towns));
@@ -35,7 +41,7 @@ int main()
 					pointAthalfmatrix(&m, i, j, -1.0);
 					continue;
 				}
-				pointAthalfmatrix(&m, i, j, getDistanceE(getTownByName(i, countTowns, towns), getTownByName(m.width-j, countTowns, towns)));
+				pointAthalfmatrix(&m, i, j, getDistance(getTownByName(i, countTowns, towns), getTownByName(m.width-j, countTowns, towns)));
 			}
 		}
 		printtownmatrix(&m);
@@ -48,12 +54,16 @@ int main()
 		town temp[countTowns];// координаты |
 		temp[0] = towns[0];
 		// 
+		double distanceInTourBest = -1.0, distanceInTourNew = 0.0, noneOptimalDistance = 0.0;
+
+		double runtime = clock();
 		for(int i = 0; i < countTasks;i++)
 		{
 
 			doShuffle(countTowns - 1, sub);
 			printTownList(countTowns - 1, sub);
 			int cap, k = 0, p = 0;
+			
 			while(k < countTowns - 1) {
 				//printf("?%d\n", sub[k].weight);
 				for(cap = sub[k].weight; cap < maxCapacity && k < countTowns - 1;k++, cap += sub[k].weight) {
@@ -61,14 +71,33 @@ int main()
 					temp[k-p] = sub[k];
 				}
 				//printTownList(k - p, temp);
+				noneOptimalDistance += subtourdistance(temp, k-p, &m);
+
 				if(k-p > 2) {
-					LKH(temp, k-p, &m);
+
+					distanceInTourNew += LKH(temp, k-p, &m);
 					//TODO choose best variant tour.
+				} else {
+					distanceInTourNew += subtourdistance(temp, k-p, &m);
 				}
-				
+			
 				p = k;
 			}
+
+			if(distanceInTourBest == -1.0) {
+				fprintf(out, "%lf\t%lf\n", noneOptimalDistance, 0.0);
+				distanceInTourBest = noneOptimalDistance;
+			}
+
+			if(distanceInTourNew < distanceInTourBest) {
+				distanceInTourBest = distanceInTourNew;
+			    fprintf(out, "%lf\t%lf\n", distanceInTourBest, (clock() - runtime) / CLOCKS_PER_SEC);
+			}
+			distanceInTourNew = 0.0;
+
 		}
+		fprintf(out, "%lf\t%lf\n", distanceInTourBest, (clock() - runtime) / CLOCKS_PER_SEC);
+		fputc('\n', out);
 	}
 	
 

@@ -304,7 +304,7 @@ int moveElems(town *sub, int start1, int end1, int start2, int end2)
 }
 
 
-void lkh2opt(town *sub, int lenSub, halfmatrix* m)
+double lkh2opt(town *sub, int lenSub, halfmatrix* m)
 {
 	town subcopy[lenSub];
 	//цикл копирования sub -> subcopy
@@ -339,9 +339,10 @@ void lkh2opt(town *sub, int lenSub, halfmatrix* m)
 	}
 	printf("New distance: %lf\n", best);
 	printf("New list: "); printTownList(lenSub, sub);
+	return best;
 }
 
-void lkh3opt(town *sub, int lenSub, halfmatrix *m)
+double lkh3opt(town *sub, int lenSub, halfmatrix *m)
 {
 
 	/*
@@ -368,9 +369,8 @@ void lkh3opt(town *sub, int lenSub, halfmatrix *m)
 
 	printf("\n--*--\nOld distance: %lf\n", best);
 	printf("Old list: "); printTownList(lenSub, subcopy);
-
-
 	int a0, b0, a, b, mode;
+
 	for(int i = 0; i < countUpdate; i++)
 	{
 		//mode = rand() % 7;
@@ -385,26 +385,25 @@ void lkh3opt(town *sub, int lenSub, halfmatrix *m)
 		a = my_min(a0, b0);
 		b = my_max(a0, b0);
 		printf("%d %d\n", a, b);
-		
 		switch(mode){
 			case(0): {reverseTown(subcopy, 1, a);break;}
 			case(1): {reverseTown(subcopy, a+1, b);break;}
-			case(2): {reverseTown(subcopy, b+1, lenSub);break;}
+			case(2): {reverseTown(subcopy, b+1, lenSub-1);break;}
 			case(3): {moveElems(subcopy, a, b-1,b,lenSub-1);break;}
 			// case 4, 5, 6 - crash program: Segmentation Fault
 			case(4): {
-				//reverseTown(subcopy, 0, a);
-				//moveElems(subcopy, a, b-1,b,lenSub-1);
+				reverseTown(subcopy, 0, a);
+				moveElems(subcopy, a, b-1,b,lenSub-1);
 				break;
 			}
 			case(5): {
-				//reverseTown(subcopy, a, b);
-				//moveElems(subcopy, a, b-1,b,lenSub-1);
+				reverseTown(subcopy, a, b);
+				moveElems(subcopy, a, b-1,b,lenSub-1);
 				break;
 			}
 			case(6): {
-				//reverseTown(subcopy, b, lenSub);
-				//moveElems(subcopy, a, b-1,b,lenSub-1);
+				reverseTown(subcopy, b, lenSub-1);
+				moveElems(subcopy, a, b-1,b,lenSub-1);
 				break;
 			}
 		}
@@ -419,8 +418,11 @@ void lkh3opt(town *sub, int lenSub, halfmatrix *m)
 		}
 		
 	}
+
+
 	printf("New distance: %lf\n", best);
 	printf("New list: "); printTownList(lenSub, sub);
+	return best;
 }
 
 

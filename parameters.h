@@ -1,17 +1,17 @@
 
 // for towns
-#define countTowns 14
+#define countTowns 21
 
 // for cars
 #define maxCapacity 150
 #define maxCountCar 3
 #define optimalRadius 0.37
-#define countFiles 1
+#define countFiles 2
 
 #define FILES \
 	char *mfiles[] = { \
 		"/Users/ivandruzkov/project/LKH0/20(20_задач)/20200925_093755.csv", \
-		"20(20_задач)/20201027_214904.csv", \
+		"/Users/ivandruzkov/project/LKH0/20(20_задач)/20201027_214904.csv", \
 		"20(20_задач)/20201028_202211.csv", \
 		"20(20_задач)//20201029_201947.csv", \
 		"20(20_задач)//20201105_201910.csv", \
@@ -48,6 +48,7 @@
 		maketown(13,0.48, 0.47, 41) \
 	}
 // for lkh
-#define countTasks 1
-#define countUpdate 1
+#define countTasks 1000
+#define countUpdate 200
 #define LKH lkh3opt
+#define fileout "lkh_out.txt"
