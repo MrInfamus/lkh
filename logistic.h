@@ -319,7 +319,8 @@ double lkh2opt(town *sub, int lenSub, halfmatrix* m)
 	printf("Old distance: %lf\n", best);
 	printf("Old list: "); printTownList(lenSub, subcopy);
 	//Основной цикл lkh
-	for(int i = 0; i < countUpdate; i++)
+	double runtime = clock(); \
+	for(int i = 0; i < ALGFOR(i); i++)
 	{
 		a = rand() % lenSub;
 		b = rand() % lenSub;
@@ -371,7 +372,8 @@ double lkh3opt(town *sub, int lenSub, halfmatrix *m)
 	printf("Old list: "); printTownList(lenSub, subcopy);
 	int a0, b0, a, b, mode;
 
-	for(int i = 0; i < countUpdate; i++)
+	double runtime = clock(); 
+	for(int i = 0; ALGFOR(i); i++)
 	{
 		mode = rand() % 7;
 
@@ -425,44 +427,64 @@ double lkh3opt(town *sub, int lenSub, halfmatrix *m)
 }
 
 
-
-void lkh4opt(town *sub, int lenSub, halfmatrix* m)
+void GenerateStateCandidate(town *sub, town *best, int lenSub) 
 {
-	int a, b, c;
-	for(int i = 0; i < countUpdate; i++)
-	{
-		a = rand() % lenSub;
-		b = rand() % lenSub;
-		c = rand() % lenSub;
-		while(a==b) {
-			b = rand() % lenSub;
-		}
-		while(a == c || b == c) {
-			c = rand() % lenSub;
-		}
-
-		//hahahhahahhaa
-		//int nmin, ns, nmax = my_min(my_min(a, b), my_min(a, c)), \
-		a + b + c - my_min(my_min(a, b), my_min(a, c)) - my_max(my_max(a, b), my_max(a, c)), \
-		my_max(my_max(a, b), my_max(a, c));
-
-		int nmin, ns, nmax;
-		if(a > b && b > c) {
-			nmin = c; ns = b; nmax = a;
-		} else if(c < a && a < b) {
-			//nmin, ns, nmax = c, a, b;
-		} else if(a > c && c > b) {
-			//nmin, ns, nmax = b, c, a;
-		} else if(b < a && a < c) {
-			//nmin, ns, nmax = b, a, c;
-		} else if(b > c && c > a) {
-			//nmin, ns, nmax = a, c, b;
-		} else if(a < b && b < c) {
-			//nmin, ns, nmax = a, b, c;
-		}
-		printf("%d, %d, %d\n", nmin, ns, nmax);
-
-
+	int indexA = rand() % lenSub;
+	int indexB = rand() % lenSub;
+	while(indexA == indexB){
+		indexB = rand() % lenSub;
 	}
+
+	for(int i = 0; i < my_min(indexA,indexB); i++) 
+	{
+		sub[i] = best[i];
+	}
+
+	for(int i = 0; i < my_max(indexA, indexB) - my_min(indexA, indexB) + 1; i++) 
+	{ 
+		sub[my_min(indexA, indexB) + i] = best[my_max(indexA, indexB) - i]; 
+	}
+
+	for(int i = my_max(indexA, indexB) + 1; i < lenSub; i++) 
+	{
+		sub[i] = best[i];
+	}
+
+}
+
+double sa(town *sub, int lenSub, halfmatrix *m) {
+	town subcopy[lenSub];
+	//цикл копирования sub -> subcopy
+	for(int i = 0; i < lenSub; i++)
+	{
+		subcopy[i] = sub[i];
+	}
+
+	double best = subtourdistance(subcopy, lenSub, m), newd, p;
+	double runtime = clock(); 
+	int T = tmax;
+	for(int k = 0; T >= tmin && clock() - runtime < 600000000; k++, T = T * 0.1 / k) {
+		GenerateStateCandidate(subcopy, sub, lenSub);
+		newd = subtourdistance(subcopy, lenSub, m);
+		if(newd < best) {
+			best = newd;
+			for(int i = 0; i < lenSub; i++) 
+			{
+				sub[i] = subcopy[i];
+			}
+		} else {
+			p = exp((best - newd) / T);
+			if(p > (rand() % 10000 / 10000.0)) 
+			{
+				best = newd;
+				for(int i = 0; i < lenSub; i++) 
+				{
+					sub[i] = subcopy[i];
+				}
+			}
+		}
+	}
+
+	return best;
 }
 

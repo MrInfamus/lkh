@@ -47,8 +47,20 @@
 		maketown(12,0.32, 0.51, 87), \
 		maketown(13,0.48, 0.47, 41) \
 	}
+
+// a[0] == 'l' && a[1] == 'j'
+
 // for lkh
-#define countTasks 1000
+#define ALGFOR(i) countUpdate
+//(timeUpdate < ((clock() - runtime) / CLOCKS_PER_SEC))
+
+#define countTasks 10
 #define countUpdate 200
+//#define timeUpdate 1500000
 #define LKH lkh3opt
 #define fileout "lkh_out.txt"
+
+//for sa
+#define tmax 100000
+#define tmin 20
+

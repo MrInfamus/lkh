@@ -29,7 +29,7 @@ int main()
 		printTownList(countTowns, towns);
 		printtown(getTownByName(0, countTowns, towns));
 		printtown(getTownByName(1, countTowns, towns));
-		printAllMap(countTowns, towns);
+		//printAllMap(countTowns, towns);
 
 		for(int i = 0; i < countTowns; i++)
 		{
