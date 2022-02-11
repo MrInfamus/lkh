@@ -6,8 +6,9 @@
 //#define maxCapacity 30
 #define maxCountCar 3
 #define optimalRadius 0.37
-#define countFiles 1
+//#define countFiles 1
 
+/*
 #define FILES \
 	char *mfiles[] = { \
 		"/Users/ivandruzkov/project/LKH0/20(20_задач)/20200925_093755.csv", \
@@ -27,7 +28,7 @@
 		"20(20_задач)//20201214_185310.csv", \
 		"20(20_задач)//20201007_185322.csv", \
 		"20(20_задач)//20201023_203450.csv" \
-	}
+	}*/
 
 
 #define STARTTOWNS \

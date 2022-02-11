@@ -29,7 +29,7 @@ void parseOneTown(const char pathFile[], const char newFileName[], int index)
 	}
 
 
-	for(int i = 0; i < countFiles; i++)
+	for(int i = 0; i < countFilesBin; i++)
 	{
 		read_file(pathFile, towns, countTowns);
 

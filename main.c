@@ -1,15 +1,18 @@
 #include <stdio.h>
 
 #include "parameters.h"
+#include "generate-script/generate-bin-lib.h"
+#include "generate-script/parameters-bin.h"
+
 #include "logistic.h"
 #include "distanceMatrix.h"
-#include "generate-bin-tables.c"
+
 
 int main()
 {
 	srand(time(NULL));
 	//STARTTOWNS;
-	FILES;
+	//FILES;
 
 
 	halfmatrix m;
@@ -23,7 +26,7 @@ int main()
 
 	town towns[countTowns];
 	
-	for(int i = 0; i < countFiles; i++)
+	for(int i = 0; i < countFilesBin; i++)
 	{
 		readOneTownByBinary(towns, &m, "test", i);
 
