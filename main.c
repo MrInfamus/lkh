@@ -25,7 +25,16 @@ int main()
 	
 	for(int i = 0; i < countFiles; i++)
 	{
-		readOneTownByBinary(towns, &m, "test", 0);
+		readOneTownByBinary(towns, &m, "test", i);
+
+
+		int maxCapacity = -1;
+		for(int c = 0; c < countTowns; c++) {
+			if(towns[c].weight > maxCapacity) {
+				maxCapacity = towns[c].weight;
+			}
+		}
+		maxCapacity *= 4;
 		/*
 		read_file(mfiles[i], towns, countTowns);
 
@@ -82,24 +91,40 @@ int main()
 					l++;
 					cap += sub[g].weight;
 				} else {
-					printTownList(l, temp);
+					noneOptimalDistance += subtourdistance(temp, l, &m);
+					//printTownList(l, temp);
 					if(l >= 3) {
-						LKH(temp, l, &m);
+						distanceInTourNew += LKH(temp, l, &m);
 					} else {
-
+						distanceInTourNew += subtourdistance(temp, l, &m);
 					}
 					cap = 0;
 					l = 0;
 					g--;
 				}
 			}
-			printTownList(l, temp);
+			//printTownList(l, temp);
+			noneOptimalDistance += subtourdistance(temp, l, &m);
+			//printTownList(l, temp);
 			if(l >= 3) {
-				LKH(temp, l, &m);
+				distanceInTourNew += LKH(temp, l, &m);
 			} else {
-
+				distanceInTourNew += subtourdistance(temp, l, &m);
 			}
 
+
+			if(distanceInTourBest == -1.0) {
+				printf("I\'m in if\n");
+				fprintf(out, "%lf\t%lf\n", noneOptimalDistance, 0.0);
+				distanceInTourBest = noneOptimalDistance;
+			}
+
+
+			if(distanceInTourNew < distanceInTourBest) {
+				distanceInTourBest = distanceInTourNew;
+			    fprintf(out, "%lf\t%lf\n", distanceInTourBest, (clock() - runtime) / CLOCKS_PER_SEC);
+			}
+			distanceInTourNew = 0.0;
 
 			//int cap, k = 0, p = 0;
 			/*
@@ -139,6 +164,8 @@ int main()
 		fputc('\n', out);
 		*/
 		}
+		fprintf(out, "%lf\t%lf\n", distanceInTourBest, (clock() - runtime) / CLOCKS_PER_SEC);
+		fputc('\n', out);
 	}
 	
 	fclose(out);

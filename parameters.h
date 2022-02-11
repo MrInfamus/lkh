@@ -3,7 +3,7 @@
 #define countTowns 21
 
 // for cars
-#define maxCapacity 30
+//#define maxCapacity 30
 #define maxCountCar 3
 #define optimalRadius 0.37
 #define countFiles 1
@@ -51,14 +51,14 @@
 // a[0] == 'l' && a[1] == 'j'
 
 // for lkh
-#define ALGFOR(i) countUpdate
+#define ALGFOR(i) i < countUpdate
 //(timeUpdate < ((clock() - runtime) / CLOCKS_PER_SEC))
 
-#define countTasks 3
-#define countUpdate 50
+#define countTasks 100
+#define countUpdate 30
 //#define timeUpdate 1500000
-#define LKH lkh2opt
-#define fileout "lkh_out.txt"
+#define LKH lkh3opt
+#define fileout "/Users/ivandruzkov/project/lkh/tmp/lkh_out.txt"
 
 //for sa
 #define tmax 100000

@@ -225,7 +225,7 @@ double subtourdistance(town *sub, int lenSub, halfmatrix* m)
 void reverseTown(town *sub, int i, int j)
 {
 	int s = (j + i) / 2;
-	if((j + i) % 2 == 0) {
+	if((j + i) % 2 == 1) {
 		for(int k = 0; k < (j - i + 1) / 2; k++)
 		{
 			swap(&sub[s - k], &sub[s+1+k]);
@@ -332,7 +332,7 @@ double lkh2opt(town *sub, int lenSub, halfmatrix* m)
 	printf("Old list: "); printTownList(lenSub, subcopy);
 	//Основной цикл lkh
 	double runtime = clock(); \
-	for(int i = 0; i < ALGFOR(i); i++)
+	for(int i = 0; ALGFOR(i); i++)
 	{
 		a = rand() % lenSub;
 		b = rand() % lenSub;
@@ -391,12 +391,18 @@ double lkh3opt(town *sub, int lenSub, halfmatrix *m)
 	{
 		mode = rand() % 7;
 
+		//printf("l: %d, sub: ", lenSub);
+		/*for(int db = 0; db < lenSub; db++) {
+			printf("%d ", sub[db].name);
+		} putchar('\n');*/
+
 		a0 = rand() % lenSub;
 		b0 = rand() % lenSub;
 		
 		while(a0==b0) {
 			b0 = rand() % lenSub;
 		}
+		//printf("I pass while!\n");
 		a = my_min(a0, b0);
 		b = my_max(a0, b0);
 		//printf("%d %d\n", a, b);

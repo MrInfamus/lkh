@@ -1,11 +1,8 @@
-
 #include <stdio.h>
 #include <stdlib.h>
-#include "parameters.h"
-#include "distanceMatrix.h"
-#include "logistic.h"
-
-#define pathSavingTowns "/Users/ivandruzkov/project/lkh/bin-towns"
+#include "parameters-bin.h"
+#include "../distanceMatrix.h"
+#include "../logistic.h"
 
 void parseOneTown(const char pathFile[], const char newFileName[], int index)
 {
@@ -41,6 +38,15 @@ void parseOneTown(const char pathFile[], const char newFileName[], int index)
 		//printtown(getTownByName(1, countTowns, towns));
 		//printAllMap(countTowns, towns);
 
+		int maxCapacity = -1;
+		
+		for(int c = 0; c < countTowns; c++) {
+			if(towns[c].weight > maxCapacity) {
+				maxCapacity = towns[c].weight;
+			}
+		}
+		maxCapacity *= 4;
+
 		for(int i = 0; i < countTowns; i++)
 		{
 			for(int j = 0; j < countTowns-i-1; j++)
@@ -71,7 +77,7 @@ void parseOneTown(const char pathFile[], const char newFileName[], int index)
 
 	//fwrite(&m, sizeof(struct halfmatrix), 1, outtable);
 	//fwrite(towns, sizeof(struct town*), 1, outtown);
-
+	finalizehalfmatrix(&m);
 	fclose(outtown);
 	fclose(outtable);
 
@@ -111,13 +117,5 @@ void readOneTownByBinary(town *towns, halfmatrix *m, const char newFileName[], i
 	}
 }
 
-/*int main() {
-	//parseOneTown("/Users/ivandruzkov/project/LKH0/20(20_задач)/20200925_093755.csv", "test", 0);
-	halfmatrix m;
-	town towns[21];
-	readOneTownByBinary(towns, &m, "test", 0);
-	printtownmatrix(&m);
-	printTownList(countTowns, towns);
-	return 0;
-}*/
+
 
