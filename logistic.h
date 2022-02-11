@@ -199,12 +199,24 @@ double subtourdistance(town *sub, int lenSub, halfmatrix* m)
 	// 1 2 3 4 #4
 	// 01 12 23 34 40 #5
 	//printTownList(lenSub, sub);
+	if(lenSub == 0) {
+		return 0;
+	}
+	//printf("lenSub: %d\n", lenSub);
+	//printf("all sub: [");
+	/*
+	for(int i = 0; i < lenSub; i++) {
+		printf("%d ", sub[i].name);
+	}
+	printf("]\n");
+	printf("sub[lenSub-1].name: %d\n", sub[lenSub-1].name);*/
 	double r = getByTown(m, 0, sub[0].name) + getByTown(m, 0, sub[lenSub-1].name);
 	//printf("@%lf %lf\n", getByTown(m, 0, sub[0].name), getByTown(m, 0, sub[lenSub-1].name));
 
 	for(int i = 0; i < lenSub-1; i++)
 	{
 		//printf("@%lf\n", getByTown(m, sub[i].name, sub[i+1].name));
+		//printf("sub[i+1].name: %d\n", sub[i+1].name);
 		r += getByTown(m, sub[i].name, sub[i+1].name);
 	}
 	return r;
@@ -358,8 +370,7 @@ double lkh3opt(town *sub, int lenSub, halfmatrix *m)
 	5: O  [Or O ]
 	6: O  [O  Or]
 	*/
-
-	town subcopy[lenSub];
+	town *subcopy = (town*)malloc(lenSub * sizeof(town));
 	//цикл копирования sub -> subcopy
 	for(int i = 0; i < lenSub; i++)
 	{
@@ -367,6 +378,9 @@ double lkh3opt(town *sub, int lenSub, halfmatrix *m)
 	}
 
 	double best = subtourdistance(subcopy, lenSub, m), newd;
+	if(best == 0) {
+		return -1;
+	}
 
 	printf("\n--*--\nOld distance: %lf\n", best);
 	printf("Old list: "); printTownList(lenSub, subcopy);
@@ -419,7 +433,7 @@ double lkh3opt(town *sub, int lenSub, halfmatrix *m)
 		}
 		
 	}
-
+	free(subcopy);
 
 	printf("New distance: %lf\n", best);
 	printf("New list: "); printTownList(lenSub, sub);

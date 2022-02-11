@@ -3,10 +3,10 @@
 #define countTowns 21
 
 // for cars
-#define maxCapacity 150
+#define maxCapacity 30
 #define maxCountCar 3
 #define optimalRadius 0.37
-#define countFiles 2
+#define countFiles 1
 
 #define FILES \
 	char *mfiles[] = { \
@@ -54,10 +54,10 @@
 #define ALGFOR(i) countUpdate
 //(timeUpdate < ((clock() - runtime) / CLOCKS_PER_SEC))
 
-#define countTasks 10
-#define countUpdate 200
+#define countTasks 3
+#define countUpdate 50
 //#define timeUpdate 1500000
-#define LKH lkh3opt
+#define LKH lkh2opt
 #define fileout "lkh_out.txt"
 
 //for sa

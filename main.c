@@ -3,6 +3,7 @@
 #include "parameters.h"
 #include "logistic.h"
 #include "distanceMatrix.h"
+#include "generate-bin-tables.c"
 
 int main()
 {
@@ -12,7 +13,7 @@ int main()
 
 
 	halfmatrix m;
-	inithalfmatrix(&m, countTowns-1);
+	//inithalfmatrix(&m, countTowns-1);
 
 
 	FILE *out = fopen(fileout, "w");
@@ -21,9 +22,11 @@ int main()
 	}
 
 	town towns[countTowns];
-	//Пока криво, но надо будет допилить
+	
 	for(int i = 0; i < countFiles; i++)
 	{
+		readOneTownByBinary(towns, &m, "test", 0);
+		/*
 		read_file(mfiles[i], towns, countTowns);
 
 		printTownList(countTowns, towns);
@@ -44,26 +47,62 @@ int main()
 				pointAthalfmatrix(&m, i, j, getDistance(getTownByName(i, countTowns, towns), getTownByName(m.width-j, countTowns, towns)));
 			}
 		}
+		*/
 		printtownmatrix(&m);
-		printf("%lf\n", getByTown(&m, 2, 11));
+		//printf("%lf\n", getByTown(&m, 2, 11));
 		town sub[countTowns - 1]; // города
 		for(int i = 1; i < countTowns; i++)
 		{
 			sub[i-1] = getTownByName(i, countTowns, towns);
 		}
+
+
+		for(int i = 0; i < countTowns - 1; i++) {
+			printf("%d ", sub[i].name);
+		} putchar('\n');
+
+
 		town temp[countTowns];// координаты |
 		temp[0] = towns[0];
-		// 
+		
 		double distanceInTourBest = -1.0, distanceInTourNew = 0.0, noneOptimalDistance = 0.0;
-
+		printf("%d\n", getTownByName(16, countTowns - 1, sub).weight);
 		double runtime = clock();
 		for(int i = 0; i < countTasks;i++)
 		{
 
 			doShuffle(countTowns - 1, sub);
 			printTownList(countTowns - 1, sub);
-			int cap, k = 0, p = 0;
-			
+
+			int cap = 0, l = 0;
+			for(int g = 0; g < countTowns - 1; g++) {
+				
+				if(cap + sub[g].weight <= maxCapacity) {
+					temp[l] = sub[g];
+					l++;
+					cap += sub[g].weight;
+				} else {
+					printTownList(l, temp);
+					if(l >= 3) {
+						LKH(temp, l, &m);
+					} else {
+
+					}
+					cap = 0;
+					l = 0;
+					g--;
+				}
+			}
+			printTownList(l, temp);
+			if(l >= 3) {
+				LKH(temp, l, &m);
+			} else {
+
+			}
+
+
+			//int cap, k = 0, p = 0;
+			/*
 			while(k < countTowns - 1) {
 				//printf("?%d\n", sub[k].weight);
 				for(cap = sub[k].weight; cap < maxCapacity && k < countTowns - 1;k++, cap += sub[k].weight) {
@@ -98,6 +137,8 @@ int main()
 		}
 		fprintf(out, "%lf\t%lf\n", distanceInTourBest, (clock() - runtime) / CLOCKS_PER_SEC);
 		fputc('\n', out);
+		*/
+		}
 	}
 	
 	fclose(out);
