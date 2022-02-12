@@ -1,6 +1,6 @@
 
 // for towns
-#define countTowns 21
+//#define countTowns 21
 
 // for cars
 //#define maxCapacity 30

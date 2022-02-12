@@ -5,8 +5,8 @@ int main() {
 	FILESbin;
 
 	for(int i = 0; i < countFilesBin; i++) {
+		printf("%sstartus: %d/%d%s\n", YELLOW, i+1, countFilesBin, RESET);
 		parseOneTown(mfiles[i], noteFile, i);
-		printf("startus: %d/%d\n", i+1, countFilesBin);
 	}
 
 	//parseOneTown("/Users/ivandruzkov/project/LKH0/20(20_задач)/20200925_093755.csv", "test", 0);

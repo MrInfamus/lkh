@@ -1,11 +1,19 @@
 #define countTowns 21
-#define countFilesBin 19
+#define countFilesBin 1
 
 #define pathSavingTowns "/Users/ivandruzkov/project/lkh/bin-towns"
 #define noteFile "test"
 
+#define RESET   "\033[0m"
+#define RED     "\033[1;31m"
+#define BLACK   "\033[37;40m"
+#define YELLOW  "\033[1;33m"
+#define WHITE   "\033[37;46m"
+
+
 #define FILESbin \
 	char *mfiles[] = { \
+		/*"/Users/ivandruzkov/Downloads/20201020_182616.csv"}*/ \
 		"/Users/ivandruzkov/project/LKH0/20(20_задач)/20200925_093755.csv", \
 		"/Users/ivandruzkov/project/LKH0/20(20_задач)/20201225_204810.csv", \
 		"/Users/ivandruzkov/project/LKH0/20(20_задач)/20201228_230627.csv", \

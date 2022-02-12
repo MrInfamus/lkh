@@ -17,51 +17,50 @@ void parseOneTown(const char pathFile[], const char newFileName[], int index)
 
 	snprintf(pathTown, 70, "%s/town%d/%s%d.bin", pathSavingTowns, countTowns - 1, newFileName, index);
 	snprintf(pathTable, 70, "%s/table%d/%s%d.bin", pathSavingTowns, countTowns - 1, newFileName, index);
-	printf("%s\n", pathTown);
+	//printf("%s\n", pathTown);
 	FILE* outtown = fopen(pathTown, "wb");
 	if(outtown == NULL) {
+		printf("Error writing file: %s", pathTown);
 		exit(-1);
 	}
 	FILE* outtable = fopen(pathTable, "wb");
 	if(outtable == NULL) {
 		fclose(outtown);
+		printf("Error writing file: %s", pathTable);
 		exit(-1);
 	}
 
+	read_file(pathFile, towns, countTowns);
 
-	for(int i = 0; i < countFilesBin; i++)
-	{
-		read_file(pathFile, towns, countTowns);
+	printTownList(countTowns, towns);
+	//printtown(getTownByName(0, countTowns, towns));
+	//printtown(getTownByName(1, countTowns, towns));
+	//printAllMap(countTowns, towns);
 
-		printTownList(countTowns, towns);
-		//printtown(getTownByName(0, countTowns, towns));
-		//printtown(getTownByName(1, countTowns, towns));
-		//printAllMap(countTowns, towns);
-
-		int maxCapacity = -1;
-		
-		for(int c = 0; c < countTowns; c++) {
-			if(towns[c].weight > maxCapacity) {
-				maxCapacity = towns[c].weight;
-			}
+	int maxCapacity = -1;
+	
+	for(int c = 0; c < countTowns; c++) {
+		if(towns[c].weight > maxCapacity) {
+			maxCapacity = towns[c].weight;
 		}
-		maxCapacity *= 4;
-
-		for(int i = 0; i < countTowns; i++)
-		{
-			for(int j = 0; j < countTowns-i-1; j++)
-			{
-				//printf("t%d %d t%d %lf\n", i, j, m.width-j, getDistance(towns[i], towns[m.width-j]));
-				//m.data[i][j] = getDistance(towns[j], towns[i]);
-				if(getTownByName(i, countTowns, towns).weight + getTownByName(m.width-j, countTowns, towns).weight > maxCapacity) {
-					pointAthalfmatrix(&m, i, j, -1.0);
-					continue;
-				}
-				pointAthalfmatrix(&m, i, j, getDistance(getTownByName(i, countTowns, towns), getTownByName(m.width-j, countTowns, towns)));
-			}
-		}
-		printtownmatrix(&m);
 	}
+	maxCapacity *= 4;
+
+	for(int i = 0; i < countTowns; i++)
+	{
+		for(int j = 0; j < countTowns-i-1; j++)
+		{
+			//printf("t%d %d t%d %lf\n", i, j, m.width-j, getDistance(towns[i], towns[m.width-j]));
+			//m.data[i][j] = getDistance(towns[j], towns[i]);
+			if(getTownByName(i, countTowns, towns).weight + getTownByName(m.width-j, countTowns, towns).weight > maxCapacity) {
+				pointAthalfmatrix(&m, i, j, -1.0);
+				continue;
+			}
+			pointAthalfmatrix(&m, i, j, getDistance(getTownByName(i, countTowns, towns), getTownByName(m.width-j, countTowns, towns)));
+		}
+	}
+	printtownmatrix(&m);
+	
 
 	fwrite(&m.width, sizeof(int), 1, outtable);
 	for(int i = 0; i < m.width; i++) {
@@ -72,7 +71,7 @@ void parseOneTown(const char pathFile[], const char newFileName[], int index)
 	int tmp = countTowns;
 	fwrite(&tmp, sizeof(int), 1, outtown);
 	for(int i = 0; i < countTowns; i++) {
-		fwrite(&towns[i], sizeof(town), 1, outtable);
+		fwrite(&towns[i], sizeof(struct town), 1, outtown);
 	}
 
 	//fwrite(&m, sizeof(struct halfmatrix), 1, outtable);
@@ -91,11 +90,13 @@ void readOneTownByBinary(town *towns, halfmatrix *m, const char newFileName[], i
 	printf("%s\n", pathTown);
 	FILE* intown = fopen(pathTown, "r");
 	if(intown == NULL) {
+		printf("Error writing file: %s", pathTown);
 		exit(-1);
 	}
 	FILE* intable = fopen(pathTable, "r");
 	if(intable == NULL) {
 		fclose(intown);
+		printf("Error writing file: %s", pathTable);
 		exit(-1);
 	}
 
@@ -113,7 +114,7 @@ void readOneTownByBinary(town *towns, halfmatrix *m, const char newFileName[], i
 	int tmp;
 	fread(&tmp, sizeof(int), 1, intown);
 	for(int i = 0; i < tmp; i++) {
-		fread(&towns[i], sizeof(town), 1, intable);
+		fread(&towns[i], sizeof(struct town), 1, intown);
 	}
 }
 
