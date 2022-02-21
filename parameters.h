@@ -55,13 +55,13 @@
 #define ALGFOR(i) i < countUpdate
 //(timeUpdate < ((clock() - runtime) / CLOCKS_PER_SEC))
 
-#define countTasks 100
-#define countUpdate 30
+#define countTasks 10000
+#define countUpdate 100
 //#define timeUpdate 1500000
 #define LKH lkh3opt
 #define fileout "/Users/ivandruzkov/project/lkh/tmp/lkh_out.txt"
 
 //for sa
-#define tmax 100000
-#define tmin 20
+#define tmax 1000000
+#define tmin 10
 

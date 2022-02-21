@@ -1,5 +1,5 @@
 #define countTowns 21
-#define countFilesBin 1
+#define countFilesBin 19
 
 #define pathSavingTowns "/Users/ivandruzkov/project/lkh/bin-towns"
 #define noteFile "test"
@@ -13,7 +13,7 @@
 
 #define FILESbin \
 	char *mfiles[] = { \
-		/*"/Users/ivandruzkov/Downloads/20201020_182616.csv"}*/ \
+		//"/Users/ivandruzkov/Downloads/20201020_182616.csv"} \
 		"/Users/ivandruzkov/project/LKH0/20(20_задач)/20200925_093755.csv", \
 		"/Users/ivandruzkov/project/LKH0/20(20_задач)/20201225_204810.csv", \
 		"/Users/ivandruzkov/project/LKH0/20(20_задач)/20201228_230627.csv", \
