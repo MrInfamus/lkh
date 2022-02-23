@@ -18,6 +18,7 @@ typedef struct town {
 } town;
 
 #define errortown maketown(-1, -1, -1, -1);
+#define zerotown maketown(-3, 0, 0, 3000);
 
 town maketown(int name, double x, double y, int weight)
 {
@@ -363,7 +364,6 @@ double lkh3opt(town *sub, int lenSub, halfmatrix *m)
 	0: Or O  O
 	1: O  Or O
 	2: O  O  Or
-
 	3-opt
 	3: O  [O  O ]
 	4: Or [O  O ]
@@ -390,54 +390,73 @@ double lkh3opt(town *sub, int lenSub, halfmatrix *m)
 	for(int i = 0; ALGFOR(i); i++)
 	{
 		mode = rand() % 7;
-
-		//printf("l: %d, sub: ", lenSub);
-		/*for(int db = 0; db < lenSub; db++) {
-			printf("%d ", sub[db].name);
-		} putchar('\n');*/
-
-		a0 = rand() % lenSub;
-		b0 = rand() % lenSub;
+		// mode = 6;
+		a0 = rand() % (lenSub - 1);
+		b0 = rand() % (lenSub - 1);
 		
 		while(a0==b0) {
-			b0 = rand() % lenSub;
+			b0 = rand() % (lenSub - 1);
 		}
-		//printf("I pass while!\n");
+
 		a = my_min(a0, b0);
 		b = my_max(a0, b0);
-		//printf("%d %d\n", a, b);
-		switch(mode){
-			case(0): {reverseTown(subcopy, 1, a);break;}
-			case(1): {reverseTown(subcopy, a+1, b);break;}
-			case(2): {reverseTown(subcopy, b+1, lenSub-1);break;}
-			case(3): {moveElems(subcopy, a, b-1,b,lenSub-1);break;}
-			// case 4, 5, 6 - crash program: Segmentation Fault
-			case(4): {
-				reverseTown(subcopy, 0, a);
-				moveElems(subcopy, a, b-1,b,lenSub-1);
-				break;
+		for(mode = 0; mode < 7; mode++) {
+			switch(mode){
+				case(0): {reverseTown(subcopy, 0, a);break;}
+				case(1): {reverseTown(subcopy, a+1, b);break;}
+				case(2): {reverseTown(subcopy, b+1, lenSub-1);break;}
+				case(3): {moveElems(subcopy, a+1, b, b+1,lenSub-1);break;}
+				// case 4, 5, 6 - crash program: Segmentation Fault
+				case(4): {
+					
+					reverseTown(subcopy, 0, a);
+					moveElems(subcopy, a+1, b, b+1,lenSub-1);
+					
+					break;
+				}
+				case(5): {
+					
+					reverseTown(subcopy, a+1, b);
+					moveElems(subcopy, a+1, b, b+1,lenSub-1);
+				
+					break;
+				}
+				case(6): {
+					// printf("BEFOR_REVERSE: ");
+					// for(int i = 0; i < lenSub; i++)
+					// {
+					// 	printf("%d, ", subcopy[i].name);
+					// }
+					// putchar('\n');
+					// printf("a:%d\n", a);
+					// printf("b:%d\n", b);
+					reverseTown(subcopy, b+1, lenSub-1);
+					// printf("AFTER_REVERSE: ");
+					// for(int i = 0; i < lenSub; i++)
+					// {
+					// 	printf("%d, ", subcopy[i].name);
+					// }
+					// putchar('\n');
+					moveElems(subcopy, a+1, b, b+1,lenSub-1);
+					// printf("AFTER_MOVE: ");
+					// for(int i = 0; i < lenSub; i++)
+					// {
+					// 	printf("%d, ", subcopy[i].name);
+					// }
+					// putchar('\n');
+					break;
+				}
 			}
-			case(5): {
-				reverseTown(subcopy, a, b);
-				moveElems(subcopy, a, b-1,b,lenSub-1);
-				break;
-			}
-			case(6): {
-				reverseTown(subcopy, b, lenSub-1);
-				moveElems(subcopy, a, b-1,b,lenSub-1);
-				break;
+			newd = subtourdistance(subcopy, lenSub, m);
+			if(newd < best) {
+				best = newd;
+				//цикл копирования subcopy -> sub
+				for(int j = 0; j < lenSub; j++)
+				{
+					sub[j] = subcopy[j];
+				}
 			}
 		}
-		newd = subtourdistance(subcopy, lenSub, m);
-		if(newd < best) {
-			best = newd;
-			//цикл копирования subcopy -> sub
-			for(int j = 0; j < lenSub; j++)
-			{
-				sub[j] = subcopy[j];
-			}
-		}
-		
 	}
 	free(subcopy);
 
@@ -445,7 +464,6 @@ double lkh3opt(town *sub, int lenSub, halfmatrix *m)
 	printf("New list: "); printTownList(lenSub, sub);
 	return best;
 }
-
 
 void GenerateStateCandidate(town *sub, town *best, int lenSub) 
 {
@@ -483,7 +501,7 @@ double sa(town *sub, int lenSub, halfmatrix *m) {
 	double best = subtourdistance(subcopy, lenSub, m), newd, p;
 	double runtime = clock(); 
 	int T = tmax;
-	for(int k = 0; T >= tmin || clock() - runtime < 10000; k++, T = T * 0.1 / (k-1)) {
+	for(int k = 0; T >= tmin && clock() - runtime < 600000000; T = T / (k + 1), k++) {
 		GenerateStateCandidate(subcopy, sub, lenSub);
 		newd = subtourdistance(subcopy, lenSub, m);
 		if(newd < best) {

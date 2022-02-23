@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "parameters-bin.h"
+#include "../parameters.h"
 #include "../distanceMatrix.h"
 #include "../logistic.h"
 
@@ -15,8 +15,8 @@ void parseOneTown(const char pathFile[], const char newFileName[], int index)
 
 	char pathTown[70], pathTable[70];
 
-	snprintf(pathTown, 70, "%s/town%d/%s%d.bin", pathSavingTowns, countTowns - 1, newFileName, index);
-	snprintf(pathTable, 70, "%s/table%d/%s%d.bin", pathSavingTowns, countTowns - 1, newFileName, index);
+	snprintf(pathTown, 70, "%s/town%lld/%s%d.bin", pathSavingTowns, countTowns - 1, newFileName, index);
+	snprintf(pathTable, 70, "%s/table%lld/%s%d.bin", pathSavingTowns, countTowns - 1, newFileName, index);
 	//printf("%s\n", pathTown);
 	FILE* outtown = fopen(pathTown, "wb");
 	if(outtown == NULL) {
@@ -85,8 +85,8 @@ void parseOneTown(const char pathFile[], const char newFileName[], int index)
 void readOneTownByBinary(town *towns, halfmatrix *m, const char newFileName[], int index) {
 	char pathTown[70], pathTable[70];
 
-	snprintf(pathTown, 70, "%s/town%d/%s%d.bin", pathSavingTowns, countTowns - 1, newFileName, index);
-	snprintf(pathTable, 70, "%s/table%d/%s%d.bin", pathSavingTowns, countTowns - 1, newFileName, index);
+	snprintf(pathTown, 70, "%s/town%lld/%s%d.bin", pathSavingTowns, countTowns - 1, newFileName, index);
+	snprintf(pathTable, 70, "%s/table%lld/%s%d.bin", pathSavingTowns, countTowns - 1, newFileName, index);
 	printf("%s\n", pathTown);
 	FILE* intown = fopen(pathTown, "r");
 	if(intown == NULL) {

@@ -25,19 +25,26 @@ int main()
 	}
 
 	town towns[countTowns];
-	
 	for(int i = 0; i < countFilesBin; i++)
 	{
 		readOneTownByBinary(towns, &m, "test", i);
-
-
-		int maxCapacity = -1;
+		printf("twn: ");
+		for(int i = 0; i < countTowns; i++) {
+			printf("%d ", towns[i].name);
+		} putchar('\n');
+		printtown(towns[1]);		
+		//[0, 1, 2, 3, 4, 5, 6]
+		//Вариант 1
+		//[1, 2, 6, 0, 0, 0, 0]
+		//[1, 2, 6]
+		//Вариант 2
+		//[-2, 1, 2, -2, -2, -2, 6]
 		for(int c = 0; c < countTowns; c++) {
 			if(towns[c].weight > maxCapacity) {
-				maxCapacity = towns[c].weight;
+				towns[c] = zerotown;
+				printf("c: %d\n", c);
 			}
 		}
-		maxCapacity *= 4;
 		/*
 		read_file(mfiles[i], towns, countTowns);
 
@@ -62,17 +69,27 @@ int main()
 		*/
 		printtownmatrix(&m);
 		//printf("%lf\n", getByTown(&m, 2, 11));
-		town sub[countTowns - 1]; // города
+		town *sub = (town*)malloc((countTowns - 1) * sizeof(town)); // города
+		
+		int w = 0; town t;
 		for(int i = 1; i < countTowns; i++)
 		{
-			sub[i-1] = getTownByName(i, countTowns, towns);
+			t = getTownByName(i, countTowns, towns);
+			if(t.name == -1){
+				printf("Error town: %d\n", t.name);
+				continue;
+			}
+			sub[w] = t;
+			w++;
 		}
+		int newCountTowns = w;
+		sub = realloc(sub, newCountTowns * sizeof(town));
 
-
-		for(int i = 0; i < countTowns - 1; i++) {
+		printf("sub: ");
+		for(int i = 0; i < newCountTowns; i++) {
 			printf("%d ", sub[i].name);
 		} putchar('\n');
-
+		printtown(sub[1]);
 
 		town temp[countTowns];// координаты |
 		temp[0] = towns[0];
@@ -83,11 +100,11 @@ int main()
 		for(int i = 0; i < countTasks;i++)
 		{
 
-			doShuffle(countTowns - 1, sub);
-			printTownList(countTowns - 1, sub);
+			doShuffle(newCountTowns, sub);
+			//printTownList(newCountTowns, sub);
 
 			int cap = 0, l = 0;
-			for(int g = 0; g < countTowns - 1; g++) {
+			for(int g = 0; g < newCountTowns; g++) {
 				
 				if(cap + sub[g].weight <= maxCapacity) {
 					temp[l] = sub[g];
@@ -117,7 +134,7 @@ int main()
 
 
 			if(distanceInTourBest == -1.0) {
-				printf("I\'m in if\n");
+				//printf("I\'m in if\n");
 				fprintf(out, "%lf\t%lf\n", noneOptimalDistance, 0.0);
 				distanceInTourBest = noneOptimalDistance;
 			}
@@ -169,8 +186,8 @@ int main()
 		}
 		fprintf(out, "%lf\t%lf\n", distanceInTourBest, (clock() - runtime) / CLOCKS_PER_SEC);
 		fputc('\n', out);
+		free(sub);
 	}
-	
 	fclose(out);
 	finalizehalfmatrix(&m);
 	return 0;

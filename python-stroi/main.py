@@ -17,12 +17,15 @@ fig, ax = plt.subplots()
 x = []
 y = []
 t = -1
-te = 9
+te = 15
 for i in range(len(sastr)):
 	if sastr[i] == ['']:
 		t+=1
 		if(t == te):
-			ax.plot(x, y, linewidth=2.0, color="black")
+			yf = []
+			for i in range(1, len(x)):
+				yf.append((y[i-1] - y[i])/(x[i-1] - x[i]))
+			ax.plot(x[:-1], yf, linewidth=2.0, color="black")
 			break
 		x = []
 		y = []
@@ -39,7 +42,10 @@ for i in range(len(lkhstr)):
 		print(x, y)
 		t+=1
 		if(t == te):
-			ax.plot(x, y, linewidth=2.0, color="red")
+			yf = []
+			for i in range(1, len(x)):
+				yf.append((y[i-1] - y[i])/(x[i-1] - x[i]))
+			ax.plot(x[:-1], yf, linewidth=2.0, color="red")
 			break
 		x = []
 		y = []

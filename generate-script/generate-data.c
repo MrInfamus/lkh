@@ -5,7 +5,7 @@ int main() {
 	FILESbin;
 
 	halfmatrix m;
-	town towns[21];
+	town towns[countTowns];
 
 	for(int i = 0; i < countFilesBin; i++) {
 		printf("%sstartus: %d/%d%s\n", YELLOW, i+1, countFilesBin, RESET);
@@ -21,5 +21,6 @@ int main() {
 	//readOneTownByBinary(towns, &m, noteFile, 0);
 	//printtownmatrix(&m);
 	//printTownList(countTowns, towns);
+	//printtown(towns[1]);
 	return 0;
 }
