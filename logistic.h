@@ -17,8 +17,8 @@ typedef struct town {
 	int weight;
 } town;
 
-#define errortown maketown(-1, -1, -1, -1);
-#define zerotown maketown(-3, 0, 0, 3000);
+#define errortown maketown(-1, -1, -1, -1)
+#define zerotown maketown(-3, 0, 0, 3000)
 
 town maketown(int name, double x, double y, int weight)
 {
