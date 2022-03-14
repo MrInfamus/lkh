@@ -53,7 +53,7 @@ void doShuffleTw(int counttown, twtown *towns)
     }
 }
 
-double subtourdistanceTw(twtown *sub, int lenSub, halfmatrix* m)
+double subtourdistanceTw(twtown *sub, int lenSub, halfmatrix* m, const double timer, const double endTime)
 {
     // 1 2 3 4 #4
     // 01 12 23 34 40 #5
@@ -69,6 +69,9 @@ double subtourdistanceTw(twtown *sub, int lenSub, halfmatrix* m)
     }
     printf("]\n");
     printf("sub[lenSub-1].name: %d\n", sub[lenSub-1].name);*/
+    double localtimer = timer;
+
+
     double r = getByTown(m, 0, sub[0].t.name) + getByTown(m, 0, sub[lenSub-1].t.name);
     //printf("@%lf %lf\n", getByTown(m, 0, sub[0].name), getByTown(m, 0, sub[lenSub-1].name));
 
@@ -184,7 +187,7 @@ int moveElemsTw(twtown *sub, int start1, int end1, int start2, int end2)
 }
 
 
-double lkh3optTw(twtown *sub, int lenSub, halfmatrix *m)
+double lkh3optTw(twtown *sub, int lenSub, halfmatrix *m, double *timer, const double endTime) // timer - is a now time. Global time on the world.
 {
 
     /*
@@ -205,14 +208,15 @@ double lkh3optTw(twtown *sub, int lenSub, halfmatrix *m)
         subcopy[i] = sub[i];
     }
 
-    double best = subtourdistanceTw(subcopy, lenSub, m), newd;
+    double best = subtourdistanceTw(subcopy, lenSub, m, *timer, endTime), newd;
     if(best == 0) {
         return -1;
     }
 
-    printf("\n--*--\nOld distance: %lf\n", best);
-    printf("Old list: "); printTwTownList(subcopy, lenSub);
+    //printf("\n--*--\nOld distance: %lf\n", best);
+    //printf("Old list: "); printTwTownList(subcopy, lenSub); putchar('\n');
     int a0, b0, a, b, mode;
+    double localtimer = *timer;
 
     double runtime = clock(); 
     //for(int i = 0; 0; i++)//ALGFOR(i); i++)
@@ -279,7 +283,8 @@ double lkh3optTw(twtown *sub, int lenSub, halfmatrix *m)
                             break;
                         }
                     }
-                    newd = subtourdistanceTw(subcopy, lenSub, m);
+
+                    newd = subtourdistanceTw(subcopy, lenSub, m, *timer, endTime);
                     if(newd < best) {
                         best = newd;
                         //цикл копирования subcopy -> sub
@@ -298,9 +303,9 @@ double lkh3optTw(twtown *sub, int lenSub, halfmatrix *m)
         }
     //}
     free(subcopy);
-
+    /*
     printf("New distance: %lf\n", best);
-    printf("New list: "); printTwTownList(sub, lenSub);
+    printf("New list: "); printTwTownList(sub, lenSub);*/
     return best;
 }
 
@@ -459,19 +464,62 @@ int main()
 
     readOneTwTownByBinary(towns, &m, "twtowntest", 0);
     //printtwtown(towns[0]);
+    twtown town0 = getTwTownByName(0, countTowns, towns);
+    /*
+    В некоторых ситуациях скорее всего "Карета" будет превращаться в "Тыкву"(Работать некоректно) - я думаю при прохождении через 00:00
+    town0.mTimeStart = 18 * 60;
+    town0.mTimeEnd =   12 * 60;
+    */
+    town0.mTimeStart = 12 * 60;
+    town0.mTimeEnd =   9 * 60;
+    double timer = town0.mTimeStart;
+    double endTime = town0.mTimeEnd;
+
     printTwTownList(towns, 21);
+
+    int arctown0, arctownc;
+
     for(int c = 0; c < countTowns; c++) {
-        if(towns[c].t.weight > maxCapacity) {
+
+        if(town0.mTimeStart > town0.mTimeEnd) {
+            arctown0 = 24 * 60 - town0.mTimeStart + town0.mTimeEnd;
+        } else {
+            arctown0 = town0.mTimeEnd - town0.mTimeStart;
+        }
+
+        if(towns[c].mTimeStart > towns[c].mTimeEnd) {
+            arctownc = 24 * 60 - towns[c].mTimeStart + towns[c].mTimeEnd;
+        } else {
+            arctownc = towns[c].mTimeEnd - towns[c].mTimeStart;
+        }
+
+        if(arctown0 <= arctownc) {
+            if(towns[c].mTimeStart < town0.mTimeStart) towns[c].mTimeStart = town0.mTimeStart;
+            if(towns[c].mTimeEnd < town0.mTimeStart) towns[c].mTimeEnd = town0.mTimeStart;
+            if(towns[c].mTimeStart > town0.mTimeEnd) towns[c].mTimeStart = town0.mTimeEnd;
+            if(towns[c].mTimeEnd > town0.mTimeEnd) towns[c].mTimeEnd = town0.mTimeEnd;
+        } else {
+            if(towns[c].mTimeStart > town0.mTimeStart) towns[c].mTimeStart = town0.mTimeStart;
+            if(towns[c].mTimeEnd > town0.mTimeStart) towns[c].mTimeEnd = town0.mTimeEnd;
+            if(towns[c].mTimeStart > town0.mTimeEnd) towns[c].mTimeStart = town0.mTimeStart;
+            if(towns[c].mTimeEnd > town0.mTimeEnd) towns[c].mTimeEnd = town0.mTimeEnd;
+        }
+        if(towns[c].t.weight > maxCapacity || (towns[c].mTimeStart - towns[c].mTimeEnd) == 0) {
             towns[c].t = zerotown;
             printf("c: %d\n", c);
         }
+
+
     }
+
+    printtwtown(towns[1]);
+
     twtown *sub = (twtown*)malloc((countTowns - 1) * sizeof(twtown));
     int w = 0; twtown t;
     for(int i = 1; i < countTowns; i++)
     {
         t = getTwTownByName(i, countTowns, towns);
-        if(t.t.name == -1){
+        if(t.t.name == -1) {
             printf("Error town: %d\n", t.t.name);
             continue;
         }
@@ -508,12 +556,12 @@ int main()
                 l++;
                 cap += sub[g].t.weight;
             } else {
-                noneOptimalDistance += subtourdistanceTw(temp, l, &m);
+                noneOptimalDistance += subtourdistanceTw(temp, l, &m, timer, endTime);
                 //printTownList(l, temp);
                 if(l >= 3) {
-                    distanceInTourNew += LKH(temp, l, &m);
+                    distanceInTourNew += LKH(temp, l, &m, &timer, endTime);
                 } else {
-                    distanceInTourNew += subtourdistanceTw(temp, l, &m);
+                    distanceInTourNew += subtourdistanceTw(temp, l, &m, timer, endTime);
                 }
                 cap = 0;
                 l = 0;
@@ -521,12 +569,12 @@ int main()
             }
         }
         //printTownList(l, temp);
-        noneOptimalDistance += subtourdistanceTw(temp, l, &m);
+        noneOptimalDistance += subtourdistanceTw(temp, l, &m, timer, endTime);
         //printTownList(l, temp);
         if(l >= 3) {
-            distanceInTourNew += LKH(temp, l, &m);
+            distanceInTourNew += LKH(temp, l, &m, &timer, endTime);
         } else {
-            distanceInTourNew += subtourdistanceTw(temp, l, &m);
+            distanceInTourNew += subtourdistanceTw(temp, l, &m, timer, endTime);
         }
 
 

@@ -75,6 +75,7 @@ int main()
 		for(int i = 1; i < countTowns; i++)
 		{
 			t = getTownByName(i, countTowns, towns);
+			// отсечение лишний городов путем, поиска их в массиве.(по нашей реализации, в случае если город не был найден возвращался errortown)
 			if(t.name == -1){
 				printf("Error town: %d\n", t.name);
 				continue;
