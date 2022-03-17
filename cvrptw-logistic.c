@@ -334,6 +334,77 @@ double lkh3optTw(twtown *sub, int lenSub, halfmatrix *m, double *timer, const do
     return best;
 }
 
+void GenerateStateCandidateTw(twtown *sub, twtown *best, int lenSub) 
+{
+    int indexA = rand() % lenSub;
+    int indexB = rand() % lenSub;
+    while(indexA == indexB){
+        indexB = rand() % lenSub;
+    }
+
+    for(int i = 0; i < my_min(indexA,indexB); i++) 
+    {
+        sub[i] = best[i];
+    }
+
+    for(int i = 0; i < my_max(indexA, indexB) - my_min(indexA, indexB) + 1; i++) 
+    { 
+        sub[my_min(indexA, indexB) + i] = best[my_max(indexA, indexB) - i]; 
+    }
+
+    for(int i = my_max(indexA, indexB) + 1; i < lenSub; i++) 
+    {
+        sub[i] = best[i];
+    }
+}
+
+double saTw(twtown *sub, int lenSub, halfmatrix *m, double* timer, const double endTime) {
+    twtown subcopy[lenSub];
+    //цикл копирования sub -> subcopy
+    for(int i = 0; i < lenSub; i++)
+    {
+        subcopy[i] = sub[i];
+    }
+
+    double best = subtourdistanceTw(subcopy, lenSub, m, *timer, endTime), newd, p;
+    double runtime = clock(); 
+    int T = tmax;
+    for(int k = 0; T >= tmin && clock() - runtime < 600000000; T = tmax / (k + 1), k++) {
+        GenerateStateCandidateTw(subcopy, sub, lenSub);
+
+        newd = subtourdistanceTw(subcopy, lenSub, m, *timer, endTime);
+        if(best == -1 && newd != -1) {
+            best = newd;
+            //цикл копирования subcopy -> sub
+            for(int j = 0; j < lenSub; j++)
+            {
+                sub[j] = subcopy[j];
+            }
+        }
+
+        if(newd != -1 && newd < best) {
+            best = newd;
+            for(int i = 0; i < lenSub; i++) 
+            {
+                sub[i] = subcopy[i];
+            }
+        } else if(newd != -1) {
+            p = exp((best - newd) / T);
+            if(p > (rand() % 10000 / 10000.0)) 
+            {
+                best = newd;
+                for(int i = 0; i < lenSub; i++) 
+                {
+                    sub[i] = subcopy[i];
+                }
+            }
+        }
+    }
+    *timer += best;
+    return best;
+}
+
+
 
 int read_file_tw(const char* name_file, twtown *towns, int counttowns)
 {
@@ -486,9 +557,9 @@ int main()
     // for(int i = 0; i < 21; i++) {
     //     printtwtown(towns[i]);
     // }
-    // parseOneTwTown("20/20201014_154416.csv", "twtowntest", 0);
+    // parseOneTwTown("20200925_093755.csv", "twtowntest", 2);
 
-    readOneTwTownByBinary(towns, &m, "twtowntest", 0);
+    readOneTwTownByBinary(towns, &m, "twtowntest", 2);
     //printtwtown(towns[0]);
     twtown town0 = getTwTownByName(0, countTowns, towns);
     /*
@@ -698,9 +769,15 @@ int main()
     double td;
     
     double distanceInTourBest = -1.0, distanceInTourNew = 0.0, noneOptimalDistance = 0.0;
-    printf("%d\n", getTwTownByName(16, countTowns - 1, sub).t.weight);
+    printf("%d\n", getTwTownByName(16, newCountTowns - 1, sub).t.weight);
     double runtime = clock();
 
+    double serviseTime = 0;
+
+    for(int i = 0; i < newCountTowns; i++) {
+        serviseTime += sub[i].mTimeService;
+    }
+    printf("%lf %d\n", serviseTime, newCountTowns);
     for(int i = 0; i < countTasks;i++)
     {
         int days = 1;
@@ -785,19 +862,19 @@ int main()
 
         if(distanceInTourBest == -1.0) {
             //printf("I\'m in if\n");
-            fprintf(out, "%lf\t%lf\n", distanceInTourNew, 0.0);//noneOptimalDistance, 0.0);
+            fprintf(out, "%lf\t%lf\n", (distanceInTourNew - serviseTime) * kmhToMM, 0.0);//noneOptimalDistance, 0.0);
             distanceInTourBest = distanceInTourNew;
         }
 
 
         if(distanceInTourNew < distanceInTourBest) {
             distanceInTourBest = distanceInTourNew;
-            fprintf(out, "%lf\t%lf\n", distanceInTourBest, (clock() - runtime) / CLOCKS_PER_SEC);
+            fprintf(out, "%lf\t%lf\n", (distanceInTourBest - serviseTime) * kmhToMM, (clock() - runtime) / CLOCKS_PER_SEC);
         }
         distanceInTourNew = 0.0;
         printf("All days: %d\n", days);
     }
-    fprintf(out, "%lf\t%lf\n", distanceInTourBest, (clock() - runtime) / CLOCKS_PER_SEC);
+    fprintf(out, "%lf\t%lf\n", (distanceInTourBest - serviseTime) * kmhToMM, (clock() - runtime) / CLOCKS_PER_SEC);
     fputc('\n', out);
     free(sub);
 

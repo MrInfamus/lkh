@@ -59,15 +59,16 @@ double optimalRadius = 0.37;
 #define ALGFOR(i) i < countUpdate
 //(timeUpdate < ((clock() - runtime) / CLOCKS_PER_SEC))
 
-long long countTasks = 5000;
+long long countTasks = 10000;
 long long countUpdate= 100;
 //#define timeUpdate 1500000
+//lkh3optTw
 #define LKH lkh3optTw
 #define fileout "/Users/ivandruzkov/project/lkh/tmp/lkh_out.txt"
 int maxCapacity = 500;
 //for sa
-long long tmax = 1000000;
-long long tmin = 10;
+long double tmax = 1000;
+long double tmin = 0.1;
 
 //parameters-bin
 long long countTowns = 21;
