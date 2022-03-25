@@ -511,6 +511,91 @@ void parseOneTwTown(const char pathFile[], const char newFileName[], int index)
 
 }
 
+
+void parseOneTwTownNoIndex(const char pathFile[], const char newFileName[], int tcountTowns)
+{
+
+    halfmatrix m;
+    inithalfmatrix(&m, tcountTowns-1);
+    twtown towns[tcountTowns];
+    
+
+
+    char pathTown[2000], pathTable[2000];
+
+    snprintf(pathTown, 2000, "%s-town.bin", newFileName);
+    snprintf(pathTable, 2000, "%s-table.bin", newFileName);
+    printf("%s\n", pathTown);
+    FILE* outtown = fopen(pathTown, "wb");
+    if(outtown == NULL) {
+        printf("Error writing file: %s", pathTown);
+        exit(-1);
+    }
+    FILE* outtable = fopen(pathTable, "wb");
+    if(outtable == NULL) {
+        fclose(outtown);
+        printf("Error writing file: %s", pathTable);
+        exit(-1);
+    }
+
+    read_file_tw(pathFile, towns, tcountTowns);
+
+    printTwTownList(towns, tcountTowns);
+    printf("After town printing!\n");
+    //printtown(getTownByName(0, countTowns, towns));
+    //printtown(getTownByName(1, countTowns, towns));
+    //printAllMap(countTowns, towns);
+    /*
+    int maxCapacity = -1;
+    
+    for(int c = 0; c < countTowns; c++) {
+        if(towns[c].t.weight > maxCapacity) {
+            maxCapacity = towns[c].t.weight;
+        }
+    }
+    maxCapacity *= 4;*/
+
+
+    for(int i = 0; i < tcountTowns; i++)
+    {
+        for(int j = 0; j < tcountTowns-i-1; j++)
+        {
+            //printf("t%d %d t%d %lf\n", i, j, m.width-j, getDistance(towns[i], towns[m.width-j]));
+            //m.data[i][j] = getDistance(towns[j], towns[i]);
+            /*if(getTwTownByName(i, countTowns, towns).t.weight + getTwTownByName(m.width-j, countTowns, towns).t.weight > maxCapacity) {
+                pointAthalfmatrix(&m, i, j, -1.0);
+                continue;
+            }*/
+            pointAthalfmatrix(&m, i, j, getDistance(getTwTownByName(i, tcountTowns, towns).t, getTwTownByName(m.width-j, tcountTowns, towns).t) / kmhToMM);
+        }
+    }
+    printtownmatrix(&m);
+    
+
+    fwrite(&m.width, sizeof(int), 1, outtable);
+    for(int i = 0; i < m.width; i++) {
+        for(int j = 0; j < m.width - i; j++) {
+            fwrite(&m.data[i][j], sizeof(double), 1, outtable);
+        }
+    }
+    int tmp = tcountTowns;
+    fwrite(&tmp, sizeof(int), 1, outtown);
+    for(int i = 0; i < tcountTowns; i++) {
+        fwrite(&towns[i], sizeof(struct timeWindowTown), 1, outtown);
+    }
+
+    //fwrite(&m, sizeof(struct halfmatrix), 1, outtable);
+    //fwrite(towns, sizeof(struct town*), 1, outtown);
+    finalizehalfmatrix(&m);
+    fclose(outtown);
+    fclose(outtable);
+
+}
+
+
+
+
+
 void readOneTwTownByBinary(twtown *towns, halfmatrix *m, const char newFileName[], int index) {
     char pathTown[2000], pathTable[2000];
 
@@ -546,6 +631,45 @@ void readOneTwTownByBinary(twtown *towns, halfmatrix *m, const char newFileName[
         fread(&towns[i], sizeof(struct timeWindowTown), 1, intown);
     }
 }
+
+void readOneTwTownByBinaryNoIndex(twtown *towns, halfmatrix *m, const char newFileName[]) {
+    char pathTown[2000], pathTable[2000];
+
+    snprintf(pathTown, 2000, "%s-town.bin", newFileName);
+    snprintf(pathTable, 2000, "%s-table.bin", newFileName);
+    printf("%s\n", pathTown);
+    FILE* intown = fopen(pathTown, "r");
+    if(intown == NULL) {
+        printf("Error writing file: %s", pathTown);
+        exit(-1);
+    }
+    FILE* intable = fopen(pathTable, "r");
+    if(intable == NULL) {
+        fclose(intown);
+        printf("Error writing file: %s", pathTable);
+        exit(-1);
+    }
+
+    //fread(towns, sizeof(struct town*), 1, intown);
+    //fread(m, sizeof(struct halfmatrix), 1, intable);
+    printf("End readOneTownByBinary\n");
+    fread(&m->width, sizeof(int), 1, intable);
+    inithalfmatrix(m, m->width);
+    for(int i = 0; i < m->width; i++) {
+        for(int j = 0; j < m->width - i; j++) {
+            //printf("%d %d\n", i, j);
+            fread(&m->data[i][j], sizeof(double), 1, intable);
+        }
+    }
+
+    int tmp;
+    fread(&tmp, sizeof(int), 1, intown);
+    for(int i = 0; i < tmp; i++) {
+        fread(&towns[i], sizeof(struct timeWindowTown), 1, intown);
+    }
+    printf("End readOneTownByBinary\n");
+}
+
 
 int main()
 {

@@ -1,0 +1,76 @@
+{
+    "code": "Ok",
+    "waypoints":
+    [
+        {
+            "hint": "VYuigMpTI4aQAAAAKAAAAAAAAAAAAAAA5GBwQo6ihUEAAAAAAAAAAJAAAAAoAAAAAAAAAAAAAAAI6QAALaOVBAP1lAJAo5UEE_WUAgAAfxOFLFrO",
+            "distance": 2.352621,
+            "location":
+            [
+                76.915501,
+                43.316483
+            ],
+            "name": ""
+        },
+        {
+            "hint": "9vQxhvj0MYZYAAAAtgAAAAAAAAAAAAAA5Xt2QrHB-0IAAAAAAAAAAFgAAAC2AAAAAAAAAAAAAAAI6QAARt-TBIukkwL43pME8KSTAgAAzwOFLFrO",
+            "distance": 12.886534,
+            "location":
+            [
+                76.799814,
+                43.230347
+            ],
+            "name": ""
+        },
+        {
+            "hint": "W00jhlxNI4ZeAAAAZAAAAAAAAAAAAAAA6dWCQo2nikIAAAAAAAAAAF4AAABkAAAAAAAAAAAAAAAI6QAAQ1mVBLGukwLNWZUEu66TAgAA7wqFLFrO",
+            "distance": 11.266733,
+            "location":
+            [
+                76.896579,
+                43.232945
+            ],
+            "name": "ул.Уметбаева"
+        },
+        {
+            "hint": "VYuigMpTI4aQAAAAKAAAAAAAAAAAAAAA5GBwQo6ihUEAAAAAAAAAAJAAAAAoAAAAAAAAAAAAAAAI6QAALaOVBAP1lAJAo5UEE_WUAgAAfxOFLFrO",
+            "distance": 2.352621,
+            "location":
+            [
+                76.915501,
+                43.316483
+            ],
+            "name": ""
+        }
+    ],
+    "routes": [ {
+            "legs":
+            [
+                {
+                    "steps":[],
+                    "weight": 1092.5,
+                    "distance": 20044.5,
+                    "summary": "",
+                    "duration": 1092.5
+                },
+                {
+                    "steps":[],
+                    "weight": 740.4,
+                    "distance": 11451.1,
+                    "summary": "",
+                    "duration": 740.4
+                },
+                {
+                    "steps":[],
+                    "weight": 877.5,
+                    "distance": 14184.9,
+                    "summary": "",
+                    "duration": 877.5
+                }
+            ],
+            "weight_name": "routability",
+            "weight": 2710.4,
+            "distance": 45680.5,
+            "duration": 2710.4
+        } ]
+}
